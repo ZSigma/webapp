@@ -1,12 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
 <body>
-<label for="takepicture">调用相机<input id="takepicture" type="file" accept="image/*" capture="camera" ></label>
+<!--原文地址 http://blog.csdn.net/sk719887916/article/details/47189607-->
+<!--使用WebViewJavaScriptBridge主要有两个函数：
+webview.registerHandler()和webview.callHandler();
+webview.registerHandler()的主要作用是注册供给javaScript调用的方法；
+webview.callHandler()的作用是主动调用javaScript中的函数，它有三个参数，第一个是函数名，第二个是传给该函数的data(有时要主动调用该函数时，它需要确定的data,不然是无法调起该函数，这是要十分注意的)，第三个参数就是回调的对象；-->
+<!--至于还有无法调起该函数的原因还有一点就是，当你在A-&#45;&#45;Activity中初始化了BridgeView后，接着又跳到B&#45;&#45;&#45;&#45;Activity初始化另一个BridgeView,想在B-&#45;&#45;Activity中调起javaScript的函数是不行的，因为后台html中的初始化只在A&#45;&#45;Activity的BridgeView；所以你必须跳回A&#45;&#45;Actiivty来调起javaScript的函数。-->
+
+<p>
+    <xmp id="show">
+    </xmp>
+</p>
+<p>
+    <xmp id="init">
+    </xmp>
+</p>
+<p>
+    <input type="text" id="text1" value="用户名(username)"/>
+</p>
+
+<p>
+    <input type="text" id="text2" value="password"/>
+</p>
+
+<p>
+    <input type="button" id="enter" value="发消息给Native" onclick="testClick();"
+            />
+</p>
+
+<p>
+    <input type="button" id="enter1" value="调用Native方法" onclick="testClick1();"
+            />
+</p>
+
+<p>
+    <input type="button" id="enter2" value="显示源代码" onclick="testDiv();"/>
+</p>
+
+<p>
+    <input type="file" id="open" value="打开文件" onclick="onOpen();"/>
+</p>
+<p>
+    调用相机：<input type="file" accept="image/*" capture="camera"> <br>
+    调用摄像机：<input type="file" accept="video/*" capture="camcorder"> <br>
+    调用录音机：<input type="file" accept="audio/*" capture="microphone">
+</p>
+<div id="show" style="border:1px solid;width:100px;height:100px;"><a
+        href="https://www.baidu.com">Baidu</a></div>
 </body>
+<script type="text/javascript">
+    function onOpen() {
+        var str1 = document.getElementById("text1").value;
+        var str2 = document.getElementById("text2").value;
+        var data = "name=" + str1 + ",pass=" + str2;
+        //call native method
+
+        window.WebViewJavascriptBridge.callHandler(
+                'functionOpen'
+                , {'param': data }
+                , function(responseData) {
+                    // document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData;
+                }
+        );
+    }
+
+    function testDiv() {
+        document.getElementById("show").innerHTML = document.getElementsByTagName("html")[0].innerHTML;
+    }
+
+    function testClick() {
+        var str1 = document.getElementById("text1").value;
+        var str2 = document.getElementById("text2").value;
+        //发送消息给java本地代码
+        var data = {id: 1, content: "这是一个图片 <img src=\"a.png\"/> test\r\nhahaha"};
+        window.WebViewJavascriptBridge.send(
+                data
+                , function(responseData) {
+                    alert(responseDate,1);
+                    document.getElementById("show").innerHTML = "repsonseData from java, data = " + responseData
+                }
+        );
+    }
+
+
+    function testClick1() {
+        var str1 = document.getElementById("text1").value;
+        var str2 = document.getElementById("text2").value;
+        var data = "name=" + str1 + ",pass=" + str2;
+        //call native method
+        window.WebViewJavascriptBridge.callHandler(
+                'submitFromWeb'         //调用native的submitFromWeb方法
+                , {'param': data }     //传递的参数
+                , function(responseData) {  //接受native处理完后的结果
+                    document.getElementById("show").innerHTML = "send get responseData from java, data = " + responseData
+                }
+        );
+    }
+    function bridgeLog(logContent) {
+        document.getElementById("show").innerHTML = logContent;
+    }
+    // 在使用WebViewJavaScriptBridge的时候需要首先判断一下WebViewJavaScriptBridge是否存在，如果不存在需要通过添加监听'WebViewJavascriptBridgeReady'来监听
+    function connectWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) {
+            callback(WebViewJavascriptBridge)
+        } else {
+            document.addEventListener(
+                    'WebViewJavascriptBridgeReady'
+                    , function() {
+                        callback(WebViewJavascriptBridge)
+                    },
+                    false
+            );
+        }
+    }
+    // 第一连接时初始化bridage
+    //通过上面的链接WebViewJavascriptBridge可以得到一个可用WebViewJavascriptBridge，可以通过init方法来设置一个默认接收所以java发来的数据的回调，也可以通过registerHandler设置指定接收方法。
+    connectWebViewJavascriptBridge(function(bridge) {
+        bridge.init(function(message, responseCallback) {
+            console.log('JS got a message', message);
+            var data = {
+                'Javascript Responds': '测试中文!'
+            };
+            console.log('JS responding with', data);
+            responseCallback(data);
+        });
+        // 注册一个"functionInJs",供native调用，此方法为打开页面时就执行
+        bridge.registerHandler("functionInJs", function(data, responseCallback) {
+            // alert(data);        //data=用户名/地址，
+            document.getElementById("show").innerHTML = ("data from Java: = " + data);
+            var responseData = "Javascript Says  我要你的地址!"; //返回给java的内容
+            // response层，返回给java的信息
+            responseCallback(responseData);
+        });
+    });
+    bridge.init(function(message, responseCallback) {
+        console.log('JS got a message', message);
+        var data = {
+            'Javascript Responds': 'Wee!'
+        };
+        console.log('JS responding with', data);
+        responseCallback(data);
+    });
+</script>
 </html>
