@@ -53,8 +53,9 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
     <label>调用摄像机<input type="file" accept="video/*" capture="camcorder" style="display:none"></label><br>
     <label>调用录音机<input type="file" accept="audio/*" capture="microphone" style="display:none"></label>
 </p>
-<div id="show" style="border:1px solid;width:100px;height:100px;"><a
-        href="https://www.baidu.com">Baidu</a></div>
+<div id="hello" style="border:1px solid;width:100px;height:100px;">
+    <!--<a href="https://www.baidu.com">Baidu</a>-->
+</div>
 </body>
 <script type="text/javascript">
     function onOpen() {
@@ -146,6 +147,7 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
         var data = {
             'Javascript Responds': 'Wee!'
         };
+        document.getElementById("hello").innerHTML = data;
         console.log('JS responding with', data);
         responseCallback(data);
     });
