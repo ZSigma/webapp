@@ -53,7 +53,7 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
     <label>调用摄像机<input type="file" accept="video/*" capture="camcorder" style="display:none"></label><br>
     <label>调用录音机<input type="file" accept="audio/*" capture="microphone" style="display:none"></label>
 </p>
-<div id="hello" style="border:1px solid;width:100px;height:100px;">
+<div id="he" style="border:1px solid;width:100px;height:100px;">
     <!--<a href="https://www.baidu.com">Baidu</a>-->
 </div>
 </body>
@@ -127,13 +127,13 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
         bridge.init(function(message, responseCallback) {
             console.log('JS got a message', message);
             var data = {
-                'JavascriptResponds': 'Wee5!'
+                'JavascriptResponds': 'Wee!'
             };
-            document.getElementById("hello").innerHTML =message+data.JavascriptResponds;
+            document.getElementById("he").innerHTML = message+data.JavascriptResponds;
             console.log('JS responding with', data);
             responseCallback(data);
         });
-        // 注册一个"functionInJs",供native调用
+        // 注册一个"functionInJs",供native调用，此方法为打开页面时就执行
         bridge.registerHandler("functionInJs", function(data, responseCallback) {
             // alert(data);        //data=用户名/地址，
             document.getElementById("show").innerHTML = ("data from Java: = " + data);
@@ -141,7 +141,8 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
             // response层，返回给java的信息
             responseCallback(responseData);
         });
-    });
+    })
+
 
 
 </script>
