@@ -142,12 +142,15 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
             responseCallback(responseData);
         });
     });
-    WebViewJavascriptBridge.registerHandler("functionInJs_2",function(data,responseCallback){
-        document.getElementById("show").innerHTML = ("data from Java: = " + data);
-        var responseData = "Javascript 我要你的地址!"; //返回给java的内容
-        // response层，返回给java的信息
-        responseCallback(responseData);
+    connectWebViewJavascriptBridge(function(bridge){
+        bridge.registerHandler("functionInJs_2",function(data,responseCallback){
+            document.getElementById("show").innerHTML = ("data from Java: = " + data);
+            var responseData = "Javascript 我要你的地址!"; //返回给java的内容
+            // response层，返回给java的信息
+            responseCallback(responseData);
+        });
     });
+
 
 </script>
 </html>
