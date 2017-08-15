@@ -127,9 +127,8 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
         bridge.init(function(message, responseCallback) {
             console.log('JS got a message', message);
             var data = {
-                'JavascriptResponds': 'Wee!'
+                'Javascript Responds': '测试中文!'
             };
-            document.getElementById("he").innerHTML = message+data.JavascriptResponds;
             console.log('JS responding with', data);
             responseCallback(data);
         });
@@ -141,8 +140,15 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
             // response层，返回给java的信息
             responseCallback(responseData);
         });
-    })
-
+    });
+    bridge.init(function(message, responseCallback) {
+        console.log('JS got a message', message);
+        var data = {
+            'Javascript Responds': 'Wee!'
+        };
+        console.log('JS responding with', data);
+        responseCallback(data);
+    });
 
 
 </script>
