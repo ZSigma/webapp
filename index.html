@@ -124,7 +124,6 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
     //通过上面的链接WebViewJavascriptBridge可以得到一个可用WebViewJavascriptBridge，可以通过init方法来设置一个默认接收java发来的数据的回调，也可以通过registerHandler设置指定接收方法。
     connectWebViewJavascriptBridge(function(bridge) {
         bridge.init(function(message, responseCallback) {
-            alert("a");
             console.log('JS got a message', message);
             var data = {
                 'Javascript Responds': 'Wee!'
