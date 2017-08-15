@@ -13,7 +13,7 @@
 webview.registerHandler()和webview.callHandler();
 webview.registerHandler()的主要作用是注册供给javaScript调用的方法；
 webview.callHandler()的作用是主动调用javaScript中的函数，它有三个参数，第一个是函数名，第二个是传给该函数的data(有时要主动调用该函数时，它需要确定的data,不然是无法调起该函数，这是要十分注意的)，第三个参数就是回调的对象；-->
-<!--至于还有无法调起该函数的原因还有一点就是，当你在A-&#45;&#45;Activity中初始化了BridgeView后，接着又跳到B&#45;&#45;&#45;&#45;Activity初始化另一个BridgeView,想在B-&#45;&#45;Activity中调起javaScript的函数是不行的，因为后台html中的初始化只在A&#45;&#45;Activity的BridgeView；所以你必须跳回A&#45;&#45;Actiivty来调起javaScript的函数。-->
+<!--至于还有无法调起该函数的原因还有一点就是，当你在Activity中初始化了BridgeView后，接着又跳到Activity初始化另一个BridgeView,想在Activity中调起javaScript的函数是不行的，因为后台html中的初始化只在Activity的BridgeView；所以你必须跳回Actiivty来调起javaScript的函数。-->
 
 <p>
     <xmp id="show">
@@ -133,7 +133,7 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
             console.log('JS responding with', data);
             responseCallback(data);
         });
-        // 注册一个"functionInJs",供native调用，此方法为打开页面时就执行
+        // 注册一个"functionInJs",供native调用
         bridge.registerHandler("functionInJs", function(data, responseCallback) {
             // alert(data);        //data=用户名/地址，
             document.getElementById("show").innerHTML = ("data from Java: = " + data);
@@ -142,5 +142,12 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
             responseCallback(responseData);
         });
     });
+    window.WebViewJavascriptBridge.registerHandler("functionInJs_2",function(data,responseCallback){
+        document.getElementById("show").innerHTML = ("data from Java: = " + data);
+        var responseData = "Javascript 我要你的地址!"; //返回给java的内容
+        // response层，返回给java的信息
+        responseCallback(responseData);
+    });
+
 </script>
 </html>
