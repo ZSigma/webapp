@@ -81,7 +81,7 @@ webview.callHandler()的作用是主动调用javaScript中的函数，它有三�
         var str1 = document.getElementById("text1").value;
         var str2 = document.getElementById("text2").value;
         //发送消息给java本地代码
-        var data = {id: 1, content: "这是一个图片22 <img src=\"a.png\"/> test\r\nhahaha"};
+        var data = {id: 1, content: "这是一个图片<img src=\"a.png\"/> test\r\nhahaha"};
         window.WebViewJavascriptBridge.send(
                 data
                 , function(responseData) {
